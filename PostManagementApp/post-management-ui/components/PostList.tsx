@@ -10,19 +10,29 @@ export default function PostList() {
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [postToDelete, setPostToDelete] = useState<Post | null>(null)
   const router = useRouter()
 
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm)
+    }, 500) // Wait 500ms after user stops typing
+
+    return () => clearTimeout(timer)
+  }, [searchTerm])
+
   useEffect(() => {
     fetchPosts()
-  }, [searchTerm, sortOrder])
+  }, [debouncedSearchTerm, sortOrder])
 
   const fetchPosts = async () => {
     try {
       setLoading(true)
-      const data = await postService.getAllPosts(searchTerm, sortOrder)
+      const data = await postService.getAllPosts(debouncedSearchTerm, sortOrder)
       setPosts(data)
     } catch (error) {
       console.error('Error fetching posts:', error)
