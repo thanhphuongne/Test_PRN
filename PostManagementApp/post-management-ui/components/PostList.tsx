@@ -63,41 +63,43 @@ export default function PostList() {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="text-xl text-gray-600">Loading posts...</div>
+        <div className="text-2xl text-blue-600 font-semibold">Loading posts...</div>
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <input
-          type="text"
-          placeholder="Search posts by name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <div className="flex items-center gap-2">
-          <label htmlFor="sort" className="text-gray-700 font-medium">
-            Sort:
-          </label>
-          <select
-            id="sort"
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-          >
-            <option value="asc">A-Z</option>
-            <option value="desc">Z-A</option>
-          </select>
+      <div className="bg-white p-6 rounded-xl shadow-md border border-blue-100">
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <input
+            type="text"
+            placeholder="🔍 Search posts by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="flex-1 px-5 py-3 border-2 border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-800 text-lg"
+          />
+          <div className="flex items-center gap-3">
+            <label htmlFor="sort" className="text-gray-800 font-semibold text-lg">
+              Sort:
+            </label>
+            <select
+              id="sort"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+              className="px-5 py-3 border-2 border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white text-gray-800 text-lg font-medium cursor-pointer"
+            >
+              <option value="asc">A-Z</option>
+              <option value="desc">Z-A</option>
+            </select>
+          </div>
         </div>
       </div>
 
       {posts.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">
-            {searchTerm ? 'No posts found matching your search.' : 'No posts available. Create your first post!'}
+        <div className="bg-white rounded-xl p-12 text-center shadow-lg border-2 border-blue-100">
+          <p className="text-gray-700 text-xl font-medium">
+            {searchTerm ? '🔍 No posts found matching your search.' : '📝 No posts available. Create your first post!'}
           </p>
         </div>
       ) : (
@@ -105,7 +107,7 @@ export default function PostList() {
           {posts.map((post) => (
             <div
               key={post.id}
-              className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white border-2 border-blue-100 rounded-xl overflow-hidden shadow-md hover:shadow-xl hover:border-blue-300 transition-all transform hover:-translate-y-1"
             >
               {post.imageUrl && (
                 <img
@@ -118,20 +120,20 @@ export default function PostList() {
                 />
               )}
               <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2 text-gray-900">{post.name}</h3>
-                <p className="text-gray-600 mb-4 line-clamp-3">{post.description}</p>
-                <div className="flex gap-2">
+                <h3 className="text-2xl font-bold mb-3 text-gray-900">{post.name}</h3>
+                <p className="text-gray-700 mb-4 line-clamp-3 text-base leading-relaxed">{post.description}</p>
+                <div className="flex gap-3">
                   <button
                     onClick={() => handleEdit(post.id)}
-                    className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                    className="flex-1 px-5 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all font-semibold shadow-md"
                   >
-                    Edit
+                    ✏️ Edit
                   </button>
                   <button
                     onClick={() => handleDeleteClick(post)}
-                    className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    className="flex-1 px-5 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-lg hover:from-red-600 hover:to-pink-700 transition-all font-semibold shadow-md"
                   >
-                    Delete
+                    🗑️ Delete
                   </button>
                 </div>
               </div>

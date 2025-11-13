@@ -12,9 +12,11 @@ export default async function EditPage({ params }: EditPageProps) {
 
   return (
     <div>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Edit Post</h2>
-        <p className="text-gray-600 mt-2">Update the post details below</p>
+      <div className="bg-white rounded-xl p-6 mb-8 shadow-lg border-2 border-blue-100">
+        <h2 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
+          ✏️ Edit Post
+        </h2>
+        <p className="text-gray-700 text-lg font-medium">Update the post details below</p>
       </div>
       <EditPostForm postId={postId} />
     </div>
