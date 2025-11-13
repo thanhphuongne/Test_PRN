@@ -61,15 +61,33 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    
     try
     {
+        logger.LogInformation("Starting database migration...");
         var context = services.GetRequiredService<ApplicationDbContext>();
-        context.Database.Migrate();
+        
+        // Check if database can be connected
+        var canConnect = await context.Database.CanConnectAsync();
+        logger.LogInformation($"Database connection test: {canConnect}");
+        
+        if (canConnect)
+        {
+            logger.LogInformation("Running migrations...");
+            await context.Database.MigrateAsync();
+            logger.LogInformation("Database migration completed successfully!");
+        }
+        else
+        {
+            logger.LogError("Cannot connect to database!");
+        }
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating the database.");
+        logger.LogError(ex, "An error occurred while migrating the database. Error: {Message}", ex.Message);
+        logger.LogError("Inner exception: {InnerException}", ex.InnerException?.Message);
+        // Don't throw - let the app start so we can see logs
     }
 }
 

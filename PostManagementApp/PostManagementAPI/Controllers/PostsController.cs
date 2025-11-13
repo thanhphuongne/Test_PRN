@@ -199,5 +199,69 @@ namespace PostManagementAPI.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        // GET: api/posts/health
+        [HttpGet("health")]
+        public async Task<ActionResult> HealthCheck()
+        {
+            try
+            {
+                var canConnect = await _context.Database.CanConnectAsync();
+                var pendingMigrations = await _context.Database.GetPendingMigrationsAsync();
+                var appliedMigrations = await _context.Database.GetAppliedMigrationsAsync();
+                
+                return Ok(new
+                {
+                    status = "healthy",
+                    database = new
+                    {
+                        canConnect,
+                        pendingMigrations = pendingMigrations.ToList(),
+                        appliedMigrations = appliedMigrations.ToList(),
+                        totalPendingMigrations = pendingMigrations.Count(),
+                        totalAppliedMigrations = appliedMigrations.Count()
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Health check failed");
+                return StatusCode(500, new
+                {
+                    status = "unhealthy",
+                    error = ex.Message,
+                    innerError = ex.InnerException?.Message
+                });
+            }
+        }
+
+        // POST: api/posts/migrate
+        [HttpPost("migrate")]
+        public async Task<ActionResult> RunMigrations()
+        {
+            try
+            {
+                _logger.LogInformation("Manual migration requested...");
+                await _context.Database.MigrateAsync();
+                
+                var appliedMigrations = await _context.Database.GetAppliedMigrationsAsync();
+                
+                return Ok(new
+                {
+                    message = "Migrations applied successfully",
+                    appliedMigrations = appliedMigrations.ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Manual migration failed");
+                return StatusCode(500, new
+                {
+                    error = "Migration failed",
+                    message = ex.Message,
+                    innerError = ex.InnerException?.Message
+                });
+            }
+        }
     }
 }
