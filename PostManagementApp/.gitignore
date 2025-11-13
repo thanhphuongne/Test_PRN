@@ -14,8 +14,10 @@ dist/
 build/
 
 # Environment files
+.env
 .env.local
 .env.production.local
+PostManagementAPI/.env
 
 # OS files
 .DS_Store
