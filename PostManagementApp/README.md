@@ -35,10 +35,11 @@ A full-stack web application for managing posts with CRUD operations, built with
 - **Swagger** - API documentation
 
 ### Frontend
-- **React 18** - UI library
-- **React Router 7** - Routing
+- **Next.js 16** - React framework with SSR/SSG
+- **React 19** - UI library
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
 - **Axios** - HTTP client
-- **Vite** - Build tool
 
 ### Deployment
 - **Docker & Docker Compose** - Containerization
@@ -60,18 +61,23 @@ PostManagementApp/
 │   ├── Migrations/
 │   ├── Dockerfile
 │   └── Program.cs
-├── post-management-ui/         # React Frontend
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── PostList.jsx
-│   │   │   ├── CreatePost.jsx
-│   │   │   └── EditPost.jsx
-│   │   ├── services/
-│   │   │   └── api.js
-│   │   ├── App.jsx
-│   │   └── main.jsx
+├── post-management-ui/         # Next.js Frontend
+│   ├── app/
+│   │   ├── page.tsx           # Home page
+│   │   ├── create/
+│   │   │   └── page.tsx       # Create post page
+│   │   ├── edit/[id]/
+│   │   │   └── page.tsx       # Edit post page
+│   │   └── layout.tsx         # Root layout
+│   ├── components/
+│   │   ├── PostList.tsx
+│   │   ├── CreatePostForm.tsx
+│   │   ├── EditPostForm.tsx
+│   │   └── DeleteModal.tsx
+│   ├── lib/
+│   │   └── api.ts             # API service
 │   ├── package.json
-│   └── vite.config.js
+│   └── next.config.ts
 └── docker-compose.yml
 ```
 
@@ -128,9 +134,9 @@ cd post-management-ui
 npm install
 ```
 
-3. Create `.env` file:
+3. Create `.env.local` file:
 ```
-VITE_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
 ```
 
 4. Run the development server:
@@ -195,23 +201,26 @@ docker-compose down -v
 
 ### Frontend (React App)
 
-**Option 1: Deploy to Render**
-1. Build the React app locally:
-```bash
-cd post-management-ui
-npm run build
-```
-
-2. Create a new Static Site on Render:
-   - Build Command: `npm install && npm run build`
-   - Publish Directory: `dist`
-   - Add Environment Variable:
-     - `VITE_API_URL` = [Your Render API URL]/api
-
-**Option 2: Deploy to Vercel/Netlify**
+**Option 1: Deploy to Vercel (Recommended for Next.js)**
 1. Push code to GitHub
-2. Connect repository to Vercel/Netlify
-3. Add environment variable: `VITE_API_URL`
+2. Go to [Vercel](https://vercel.com)
+3. Import your repository
+4. Configure:
+   - Framework Preset: Next.js
+   - Root Directory: `post-management-ui`
+   - Build Command: `npm run build`
+   - Output Directory: (leave default)
+5. Add Environment Variable:
+   - `NEXT_PUBLIC_API_URL` = [Your Render API URL]/api
+6. Deploy
+
+**Option 2: Deploy to Netlify**
+1. Push code to GitHub
+2. Connect repository to Netlify
+3. Configure:
+   - Build Command: `npm run build`
+   - Publish Directory: `.next`
+   - Add environment variable: `NEXT_PUBLIC_API_URL`
 4. Deploy
 
 ## API Endpoints
@@ -261,8 +270,8 @@ DELETE /api/posts/{id}
 - `DATABASE_URL` or `ConnectionStrings__DefaultConnection` - PostgreSQL connection string
 - `ASPNETCORE_ENVIRONMENT` - Development/Production
 
-### Frontend (React)
-- `VITE_API_URL` - Backend API base URL
+### Frontend (Next.js)
+- `NEXT_PUBLIC_API_URL` - Backend API base URL
 
 ## Testing the Application
 

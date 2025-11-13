@@ -28,7 +28,7 @@ All requirements have been successfully implemented and tested.
 - `Program.cs` - Application configuration
 - `Dockerfile` - Docker containerization
 
-### 2. Frontend UI (React)
+### ✅ Frontend UI (Next.js with TypeScript)
 **Location:** `PostManagementApp/post-management-ui/`
 
 **Features Implemented:**
@@ -38,19 +38,25 @@ All requirements have been successfully implemented and tested.
 - ✅ Create post form with validation
 - ✅ Edit post page with pre-filled data
 - ✅ Delete with confirmation modal
-- ✅ Navigation with React Router
+- ✅ Navigation with Next.js App Router
+- ✅ TypeScript for type safety
+- ✅ Tailwind CSS for styling
+- ✅ Server-side rendering ready
 - ✅ Responsive design
 - ✅ Image display support
 - ✅ Loading states
 - ✅ Error handling
 
 **Key Files:**
-- `src/components/PostList.jsx` - Main post list
-- `src/components/CreatePost.jsx` - Create form
-- `src/components/EditPost.jsx` - Edit form
-- `src/services/api.js` - API service layer
-- `src/App.jsx` - Main app component
-- `src/App.css` - Styling
+- `components/PostList.tsx` - Main post list
+- `components/CreatePostForm.tsx` - Create form
+- `components/EditPostForm.tsx` - Edit form
+- `components/DeleteModal.tsx` - Delete confirmation
+- `lib/api.ts` - API service layer with TypeScript
+- `app/page.tsx` - Home page
+- `app/create/page.tsx` - Create page
+- `app/edit/[id]/page.tsx` - Edit page
+- `app/layout.tsx` - Root layout with navigation
 
 ### 3. Database (PostgreSQL)
 **Schema:**
@@ -132,12 +138,14 @@ Posts Table:
 - [x] CORS enabled
 
 ### ✅ Frontend
-- [x] React 18
-- [x] React Router for navigation
+- [x] Next.js 16 with App Router
+- [x] TypeScript for type safety
+- [x] Tailwind CSS for styling
 - [x] Axios for API calls
 - [x] Form validation
 - [x] Responsive design
 - [x] User-friendly UI
+- [x] Server-side rendering ready
 
 ### ✅ Deployment
 - [x] Docker support
@@ -269,10 +277,11 @@ git push -u origin main
 - Swashbuckle (Swagger)
 
 **Frontend:**
-- React 18.3
-- React Router 7.1
+- Next.js 16
+- React 19
+- TypeScript 5
+- Tailwind CSS 4
 - Axios 1.7
-- Vite 6.0
 
 **Database:**
 - PostgreSQL 16
