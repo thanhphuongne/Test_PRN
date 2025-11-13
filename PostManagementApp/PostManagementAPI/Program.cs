@@ -12,27 +12,39 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
+Console.WriteLine($"Original connection string: {connectionString}");
+
 if (!string.IsNullOrEmpty(connectionString))
 {
     // Handle postgresql:// connection string format
     if (connectionString.StartsWith("postgresql://") || connectionString.StartsWith("postgres://"))
     {
         connectionString = connectionString.Replace("postgresql://", "").Replace("postgres://", "");
-        var parts = connectionString.Split('@');
-        if (parts.Length == 2)
+        
+        // Find the last @ which separates user:password from host
+        var lastAtIndex = connectionString.LastIndexOf('@');
+        if (lastAtIndex > 0)
         {
-            var userParts = parts[0].Split(':');
-            var hostParts = parts[1].Split('/');
-            var hostAndPort = hostParts[0].Split(':');
+            var userInfo = connectionString.Substring(0, lastAtIndex);
+            var hostInfo = connectionString.Substring(lastAtIndex + 1);
             
+            var userParts = userInfo.Split(':');
             var username = userParts[0];
-            var password = userParts.Length > 1 ? userParts[1] : "";
+            var password = userParts.Length > 1 ? string.Join(":", userParts.Skip(1)) : "";
+            
+            var hostParts = hostInfo.Split('/');
+            var hostAndPort = hostParts[0].Split(':');
             var host = hostAndPort[0];
             var port = hostAndPort.Length > 1 ? hostAndPort[1] : "5432";
             var database = hostParts.Length > 1 ? hostParts[1].Split('?')[0] : "postgres";
             
             connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+            Console.WriteLine($"Parsed connection string: Host={host};Port={port};Database={database};Username={username};SSL Mode=Require");
         }
+    }
+    else
+    {
+        Console.WriteLine("Using connection string as-is (not postgresql:// format)");
     }
 }
 else
