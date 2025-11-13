@@ -14,17 +14,30 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 if (!string.IsNullOrEmpty(connectionString))
 {
-    // Handle Render.com PostgreSQL connection string format
-    if (connectionString.StartsWith("postgres://"))
+    // Handle postgresql:// connection string format
+    if (connectionString.StartsWith("postgresql://") || connectionString.StartsWith("postgres://"))
     {
-        connectionString = connectionString.Replace("postgres://", "");
+        connectionString = connectionString.Replace("postgresql://", "").Replace("postgres://", "");
         var parts = connectionString.Split('@');
-        var userParts = parts[0].Split(':');
-        var hostParts = parts[1].Split('/');
-        var hostAndPort = hostParts[0].Split(':');
-        
-        connectionString = $"Host={hostAndPort[0]};Port={hostAndPort[1]};Database={hostParts[1]};Username={userParts[0]};Password={userParts[1]};SSL Mode=Require;Trust Server Certificate=true";
+        if (parts.Length == 2)
+        {
+            var userParts = parts[0].Split(':');
+            var hostParts = parts[1].Split('/');
+            var hostAndPort = hostParts[0].Split(':');
+            
+            var username = userParts[0];
+            var password = userParts.Length > 1 ? userParts[1] : "";
+            var host = hostAndPort[0];
+            var port = hostAndPort.Length > 1 ? hostAndPort[1] : "5432";
+            var database = hostParts.Length > 1 ? hostParts[1].Split('?')[0] : "postgres";
+            
+            connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+        }
     }
+}
+else
+{
+    throw new InvalidOperationException("Database connection string is not configured.");
 }
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
